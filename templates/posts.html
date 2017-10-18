@@ -1,0 +1,109 @@
+{% block content %}
+
+<style>
+#posttit{
+	padding-top: 10px;
+}
+
+#postcon{
+	width: 300px;
+	word-wrap: break-word;
+}
+
+#postwrapper{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #659bf2;
+    width: 350px;
+}
+
+#postwrapperrt{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #8ab3f2;
+    width: 350px;
+}
+
+#txtbox {
+    height: 142px;
+    width : 300px;
+}
+
+</style>
+
+
+  <body>
+   <h1>Hello, to itucsdb1743!</h1>
+
+    <h4	style="padding-bottom: 15px;">Welcome to Posts  {{ current_user.username }}</h4>
+
+    <div class="page-header">
+        <h3>Post A Post</h3>
+      </div>
+
+      <form role="form" action="" method="post" name="add_twits"
+            class="form-horizontal">
+        <div class="form-group">
+          <label for="title" class="control-label col-sm-1">Title:</label>
+          <div class="col-sm-10">
+            <input type="text" maxlength="20" name="title" size="20" required autofocus />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="content" class="control-label col-sm-1">Content:</label>
+          <div class="col-sm-10">
+              <textarea name="content" rows="10" cols="45">Hello World!</textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-1 col-sm-10">
+            <button type="submit" name="save"
+                    class="btn btn-primary">Add Post</button>
+          </div>
+        </div>
+      </form>
+
+	<div class="page-header">
+        <h3>Here is Posts</h3>
+      </div>
+
+		{% for post in posts %}
+
+        {% if post.postid == None %}
+
+        {% else %}
+		<div id="postwrapper">
+		<h4>
+		<a d="posttit"; style="color: black" style="text-decoration: none" href="">
+		{{ post.title }}</a>
+        <font size="1" style="color: grey" id="postcon">- {{ post.postid }}</font><br>
+		<font size="4" style="color: grey" id="postcon">{{ post.context }}</font><br>
+        <font size="1" style="color: grey" id="postcon">Author: {{ post.userhandle }}</font><br>
+		<font size="2">Likes({{ post.numberoflikes }})</font>
+		</h4>
+		</div>
+		<br><br>
+        {% endif %}
+		{% endfor %}
+
+  <footer>
+  <div style="clear: both;
+    position: fixed;
+    width:100%;
+    padding:5px;
+    text-align: center;
+    background-color: #ececec;
+    bottom:0;">
+      &copy; 2018, itucsdb1743 <br>
+      <a style="color: black" style="text-decoration: none" href="{{ url_for('bugs_page') }}">
+		<font size="2">Report A  Bug</font></a>
+    </div>
+  </footer>
+
+
+  </body>
+  {% endblock %}

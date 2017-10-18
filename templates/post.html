@@ -1,0 +1,44 @@
+{% block title %}Post{% endblock %}
+{% block content %}
+<style>
+#posttit{
+	padding-top: 10px;
+}
+
+#postcon{
+	width: 300px;
+	word-wrap: break-word;
+}
+
+#postwrapper{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #659bf2;
+    width: 350px;
+}
+
+#postwrapperrt{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #8ab3f2;
+    width: 350px;
+}
+</style>
+
+<body>
+		<br>
+		<font size="1">{{ posts.postid }}</font>
+       	<id="posttit"> <font size="5"> {{ posts.title }}</font><font size="1">-{{ posts.userhandle }}</font><br>
+		<id="postcon"> <font size="3">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{ posts.context }}</font><br><br>
+
+		<form novalidate="novalidate" role="form" action="" method="post" name="post-form">
+
+      <input type="text" formnovalidate name="title" size ="15" placeholder="Updated Title" required autofocus/>
+      <input type="text" formnovalidate name="context" size ="20" placeholder="Context"/><br>
+        <br><button type="submit" name="submit" class="btn btn-success" value="update">Update Tweet</button>
+            <button type="submit" name="submit" class="btn btn-danger" value="delete">Delete Tweet!</button>
+            </form>
+        </body>
+{% endblock %}

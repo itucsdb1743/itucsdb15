@@ -1,0 +1,69 @@
+{% block content %}
+
+<style>
+#posttit{
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-bottom: 20px;
+}
+
+#postcon{
+	width: 400px;
+	padding: 10px;
+	word-wrap: break-word;
+}
+
+#postwrapper{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #659bf2;
+    width: 550px;
+    height: 300px;
+}
+
+
+</style>
+
+
+  <body>
+	<div class="page-header">
+        <h2>Welcome to itucsdb1743's Article Site</h2>
+      </div>
+
+		{% for post in posts %}
+
+        {% if post.postid == None %}
+
+        {% else %}
+		<div id="postwrapper">
+		<h4>
+		<a id="posttit"; style="color: black" style="text-decoration: none" href="">
+		{{ post.title }}</a>
+        <font size="1" style="color: grey" id="postcon">- {{ post.postid }}</font><br>
+		<font size="4" style="color: grey" id="postcon">{{ post.context }}</font><br>
+        <font size="1" style="color: grey" id="postcon">Author: {{ post.userhandle }}</font><br>
+		<font size="2" id="postcon">Likes({{ post.numberoflikes }})</font>
+		</h4>
+		</div>
+		<br><br>
+        {% endif %}
+		{% endfor %}
+
+  <footer>
+  <div style="clear: both;
+    position: fixed;
+    width:100%;
+    padding:5px;
+    text-align: center;
+    background-color: #ececec;
+    bottom:0;">
+      &copy; 2018, itucsdb1743 <br>
+      <a style="color: black" style="text-decoration: none" href="{{ url_for('bugs_page') }}">
+		<font size="2">Report A  Bug</font></a>
+    </div>
+  </footer>
+
+
+  </body>
+  {% endblock %}

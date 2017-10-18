@@ -1,0 +1,99 @@
+{% block title %}Reported Bugs{% endblock %}
+{% block content %}
+<style>
+#bugcon{
+	padding-bottom: 24px;
+	width: 425px;
+	height: 20px;
+	word-wrap: break-word;
+}
+
+#bugwrapper{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #659bf2;
+}
+
+#bugfixed{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #62f788;
+}
+
+#bugfocus{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #def762;
+}
+</style>
+
+	<body>
+	<h2	style="padding-bottom: 15px;">Welcome Admin</h2>
+
+    <div class="page-header">
+        <h3>Post A Bug</h3>
+      </div>
+
+	 <form role="form" action="" method="post" name="add_bug"
+            class="form-horizontal">
+        <div class="form-group">
+          <label for="title" class="control-label col-sm-1">Bug:</label>
+          <div class="col-sm-10">
+            <input type="text" maxlength="80" name="bugcs" size="30" required autofocus />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-1 col-sm-10">
+            <button type="submit" name="Post"
+                    class="btn btn-primary">Report A Bug</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="page-header">
+        <h3>Reported Bugs</h3>
+      </div>
+		{% for bug in bugs %}
+
+       	{% if bug.fixed==1%}
+
+       	<p align="left">
+       	<p align="left">
+       	<h4 id="bugfixed">
+       	<a style="color: black" style="text-decoration: none" href="{{ url_for('bug_page', bug_id=bug.bugid ) }}">
+		<font size="3">{{ bug.bugcause }}</font></a>
+		<a style="color: black" style="text-decoration: none" href="">
+		<font size="1">-{{ bug.userid }}</font></a><br>
+		<font size="2">Fixed</font>
+		</h4>
+		</p>
+		{% elif bug.focus==1%}
+		<p align="left">
+       	<p align="left">
+		<h4 id="bugfocus">
+       	<a style="color: black" style="text-decoration: none" href="{{ url_for('bug_page', bug_id=bug.bugid ) }}">
+		<font size="3">{{ bug.bugcause }}</font></a>
+		<a style="color: black" style="text-decoration: none" href="">
+		<font size="1">-{{ bug.userid }}</font></a><br>
+		<font size="2">Focused</font>
+		</h4>
+		</p>
+		{% else %}
+
+		<p align="left">
+       	<p align="left">
+		<h4 id="bugwrapper">
+       	<a style="color: black" style="text-decoration: none" href="{{ url_for('bug_page', bug_id=bug.bugid ) }}">
+		<font size="3">{{ bug.bugcause }}</font></a>
+		<a style="color: black" style="text-decoration: none" href="">
+		<font size="1">-{{ bug.userid }}</font></a><br>
+		</h4>
+		</p>
+		{% endif %}
+		{% endfor %}
+        </body>
+{% endblock %}

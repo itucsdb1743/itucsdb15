@@ -1,0 +1,86 @@
+{% block title %}Bug{% endblock %}
+{% block content %}
+<style>
+#bugcon{
+	padding-bottom: 24px;
+	width: 425px;
+	height: 20px;
+	word-wrap: break-word;
+}
+
+#bugwrapper{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #659bf2;
+}
+
+#bugfixed{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #62f788;
+}
+
+#bugfocus{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #def762;
+}
+</style>
+
+	<body>
+       	{% if bug.fixed==1%}
+       	<p align="left">
+       	<p align="left">
+       	<h4 id="bugfixed">
+       	{{ bug.bugid }}
+		<font size="3">{{ bug.bugcause }}</font>
+		<a style="color: black" style="text-decoration: none" href="">
+		<font size="1">-{{ bug.userid }}</font></a><br>
+		<font size="2">Fixed</font>
+		</h4>
+		</p>
+		<br>
+		<form novalidate="novalidate" role="form" action="" method="post" name="bug-form">
+        <button type="submit" name="submit" class="btn btn-danger" value="delete">Delete!</button>
+        </form>
+		<br>
+		{% elif bug.focus==1%}
+		<p align="left">
+       	<p align="left">
+		<h4 id="bugfocus">
+       	{{ bug.bugid }}
+		<font size="3">{{ bug.bugcause }}</font>
+		<a style="color: black" style="text-decoration: none" href="">
+		<font size="1">-{{ bug.userid }}</font></a><br>
+		<font size="2">Focused</font>
+		</h4>
+		</p>
+		<br>
+		<form novalidate="novalidate" role="form" action="" method="post" name="bug-form">
+        <button type="submit" name="submit" class="btn btn-success" value="setfixed">Set Fixed</button>
+        <button type="submit" name="submit" class="btn btn-danger" value="defocus">DeFocus</button>
+        <button type="submit" name="submit" class="btn btn-danger" value="delete">Delete!</button>
+        </form>
+		<br>
+		{% else %}
+		<p align="left">
+       	<p align="left">
+		<h4 id="bugwrapper">
+       	{{ bug.bugid }}
+		<font size="3">{{ bug.bugcause }}</font>
+		<a style="color: black" style="text-decoration: none" href="{{ url_for('profile_page', usrhandle=bug.userid ) }}">
+		<font size="1">-{{ bug.userid }}</font></a><br>
+		</h4>
+		</p>
+		<br>
+		<form novalidate="novalidate" role="form" action="" method="post" name="bug-form">
+        <button type="submit" name="submit" class="btn btn-success" value="setfocus">Set Focus</button>
+        <button type="submit" name="submit" class="btn btn-danger" value="delete">Delete!</button>
+        </form>
+		<br>
+		{% endif %}
+        </body>
+		{% endblock %}

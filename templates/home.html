@@ -6,10 +6,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   </head>
   <body>
-    <h1>Hello, Flask!</h1>
+    <h1>Hello, to itucsdb1743!</h1>
 
-    <footer>
-      <div id="datetime">{{ current_time }}</div>
-    </footer>
+  <footer>
+  <div style="clear: both;
+    position: fixed;
+    width:100%;
+    padding:5px;
+    text-align: center;
+    background-color: #ececec;
+    bottom:0;">
+      &copy; 2018, itucsdb1743 <br>
+      <a style="color: black" style="text-decoration: none" href="{{ url_for('bugs_page') }}">
+		<font size="2">Report A  Bug</font></a>
+    </div>
+  </footer>
+
+
   </body>
 </html>
