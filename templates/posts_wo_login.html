@@ -5,6 +5,8 @@
 	padding-top: 10px;
 	padding-left: 10px;
 	padding-bottom: 20px;
+	color: black;
+    text-decoration: none;
 }
 
 #postcon{
@@ -30,7 +32,9 @@
 	<div class="page-header">
         <h2>Welcome to itucsdb1743's Article Site</h2>
       </div>
-
+        <h2>
+            Articles |<a id="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('polls_page')}}">Polls</a>
+        </h2>
 		{% for post in posts %}
 
         {% if post.postid == None %}
@@ -38,7 +42,7 @@
         {% else %}
 		<div id="postwrapper">
 		<h4>
-		<a id="posttit"; style="color: black" style="text-decoration: none" href="">
+		<a id="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('posts_page', post_id=post.postid ) }}">
 		{{ post.title }}</a>
         <font size="1" style="color: grey" id="postcon">- {{ post.postid }}</font><br>
 		<font size="4" style="color: grey" id="postcon">{{ post.context }}</font><br>

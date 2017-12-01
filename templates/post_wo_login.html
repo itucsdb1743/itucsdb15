@@ -1,29 +1,40 @@
+{% block title %}{% endblock %}
 {% block content %}
 <style>
 #posttit{
-	padding-top: 10px;
+    padding-top: 10px;
 }
 
 #postcon{
-	width: 300px;
-	word-wrap: break-word;
+    width: 300px;
+    word-wrap: break-word;
 }
 
 #postwrapper{
-	display:inline-block;
-	border-radius: 35px;
+    display:inline-block;
+    border-radius: 35px;
     padding: 10px;
     background: #659bf2;
     width: 350px;
 }
 
+#link{
+color: black;
+text-decoration: none;
+}
+
 </style>
 
 <body>
-		<br>
+        <br>
         <div>
-		<font size="1">{{ posts.postid }}</font>
-       	<font size="5" id="posttit"> {{ posts.title }}</font><font size="1">-{{ posts.userhandle }}</font><br>
-		<font size="3" id="postcon">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{ posts.context }}</font><br><br>
+        <font size="1">{{ posts.postid }}</font>
+        <font size="5" id="posttit"> {{ posts.title }}</font><font size="1">-{{ posts.userhandle }}</font><br>
+        <font size="3" id="postcon">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{ posts.context }}</font><br><br>
             </div>
+
+        <div>
+            <a id="link"; href="{{ url_for('post_page') }}">
+                Go Back</a>
+        </div>
 {% endblock %}

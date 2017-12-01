@@ -17,6 +17,8 @@ from bug import *
 from post import *
 from forms import *
 from user import *
+from poll import Poll
+from listofpolls import ListOfPolls
 
 lm = LoginManager()
 app = Flask(__name__)
@@ -162,11 +164,84 @@ def bug_page(bug_id):
 
         return redirect(url_for('bug_page', bug_id=bugid))
 
+@app.route('/polls',methods=['GET','POST'])
+def polls_page():
+
+    if request.method=='POST':
+        if request.form['submit']=='add':
+            pollquestion=request.form['pollname']
+            app.polls=ListOfPolls('polls')
+            temppoll=Poll(pollquestion,current_user.username)
+            app.polls.addPoll(temppoll)
+            polllist=app.polls.getAllPolls()
+
+        return redirect(url_for('polls_page'))
+
+    else:
+
+        app.polls=ListOfPolls('polls')
+        polllist=app.polls.getAllPolls()
+
+        if current_user.is_authenticated:
+            return render_template('polls.html',polllist=polllist)
+        else:
+            return render_template('polls_wo_login.html',polllist=polllist)
+
+@app.route('/poll/<string:creatorname>/<string:pollquestion>',methods=['GET','POST'])
+@login_required
+def poll_page(pollquestion,creatorname):
+    current_user.activetab = 10
+    if request.method=='POST':
+        if request.form['submit']=='update':
+            current_app.tempPollList=ListOfPolls('temp')
+            poll=current_app.tempPollList.getPoll(pollquestion,creatorname)
+            newquestion=request.form['choiceorquestion']
+            poll.updateQuestion(newquestion)
+            choices=poll.getChoices()
+            isVoted=poll.isVoted(current_user.username)
+            return redirect(url_for('poll_page',pollquestion=newquestion,creatorname=creatorname))
+        elif request.form['submit']=='delete':
+            app.polls=ListOfPolls('polls')
+            polllist=app.polls.getAllPolls()
+            app.polls.deletePoll(pollquestion,creatorname)
+            return redirect(url_for('polls_page'))
+        elif request.form['submit']=='addchoice':
+            current_app.tempPollList=ListOfPolls('temp')
+            poll=current_app.tempPollList.getPoll(pollquestion,creatorname)
+            choiceinfo=request.form['choiceorquestion']
+            poll.addChoice(choiceinfo)
+            choices=poll.getChoices()
+            isVoted=poll.isVoted(current_user.username)
+        elif request.form['submit']=='vote':
+            current_app.tempPollList=ListOfPolls('temp')
+            poll=current_app.tempPollList.getPoll(pollquestion,creatorname)
+            choiceContent=request.form['answer']
+            poll.voteforPoll(choiceContent)
+            choices=poll.getChoices()
+            isVoted=poll.isVoted(current_user.username)
+
+
+        return redirect(url_for('poll_page',pollquestion=pollquestion,creatorname=creatorname))
+
+
+
+    else:
+        current_app.templist=ListOfPolls('temp')
+        poll=current_app.templist.getPoll(pollquestion,creatorname)
+        choices=poll.getChoices()
+        isVoted=poll.isVoted(current_user.username)
+        counter=0
+        if (creatorname==current_user.username):
+            return render_template('pollownerperspective.html',pollquestion=pollquestion,choices=choices,isVoted=isVoted,counter=counter)
+        else:
+            return render_template('pollvoterperspective.html',pollquestion=pollquestion,choices=choices,isVoted=isVoted,counter=counter)
+
 @app.route('/', methods=['GET', 'POST'])
 def post_page():
     if request.method == 'GET':
         now = datetime.datetime.now()
         posts = current_app.Postlist.get_posts()
+        print(request.remote_addr)
 
         if current_user.is_authenticated:
             return render_template('posts.html', posts=posts)

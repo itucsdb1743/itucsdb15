@@ -1,0 +1,35 @@
+{% block title %}Polls{% endblock %}
+{% block content %}
+  <body>
+	<br>
+	<br>
+
+	<form  align="center" role="form" action="" method="post" name="poll">
+
+      <input class="form-control"  type="text" name="pollname" style="display:inline-block;width:300px;"  size ="30" placeholder="Write the question of the poll" required autofocus/>
+
+            <button  style="margin:10px;" class="btn btn-primary btn-success" type="submit" name="submit" value="add">Add A Poll</button>
+        </form>
+<br>
+
+<p align="middle">
+		{%if polllist %}
+        {% for questions,tempcreatorname in polllist %}
+		<p align="middle">
+       	<b style="text-decoration:none">
+       	<a href="{{ url_for('poll_page',pollquestion=questions,creatorname=tempcreatorname) }}" style="color:black;">
+		Poll Question: <font color="darkred">{{questions}}</font> Owner: <font color="darkred"> {{tempcreatorname}}</font></a>
+		</b>
+		<hr>
+		</p>
+         {% endfor %}
+          {%else%}
+         <p align="middle">There is no poll in application</p>
+         {%endif%}
+     </p>
+<br>
+<br>
+</div>
+
+  </body>
+  {% endblock %}

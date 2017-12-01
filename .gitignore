@@ -62,3 +62,7 @@ target/
 
 # Vagrant
 .vagrant/
+
+\.idea/inspectionProfiles/
+
+\.idea/

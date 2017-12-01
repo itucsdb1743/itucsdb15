@@ -1,0 +1,39 @@
+{% block title %}Poll{% endblock %}
+{% block content %}
+<body>
+<p align="center"><strong>{{pollquestion}} </strong></p>
+
+<br>
+	<form align="center" role="form" action="" method="post" name="list-form">
+
+      <input type="text" name="choiceorquestion" size ="15" placeholder="Write new question or choice"required autofocus/>
+            <button type="submit" name="submit" value="update">Change Question</button>
+    		<button type="submit" name="submit" value="addchoice">Add Choice</button>
+
+     </form>
+	<br>
+
+     <form align="center" role="form" action="" method="post" name="delete-form">
+	<button type="submit" value="delete" name="submit">Delete The Poll</button>
+     </form>
+
+        <br>
+        <br>
+        <br>
+      <p align="middle">
+		{%if choices %}
+        {% for choice in choices %}
+		<p align="middle">
+       	<b style="text-decoration:none">
+       	<a href="{{ url_for('list_page_of_subscriber', listname=List) }}">
+		{{ choice}}</a></b><br>
+		<hr>
+		</p>
+         {% endfor %}
+          {%else%}
+         <p align="middle">There are no choices in this poll</p>
+         {%endif%}
+     </p>
+</body>
+
+ {% endblock %}

@@ -1,0 +1,65 @@
+{% block content %}
+
+<style>
+#posttit{
+	padding-top: 10px;
+	color: black;
+    text-decoration: none;
+}
+
+#postcon{
+	width: 300px;
+	word-wrap: break-word;
+}
+
+#postwrapper{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #659bf2;
+    width: 350px;
+}
+
+#postwrapperrt{
+	display:inline-block;
+	border-radius: 35px;
+    padding: 10px;
+    background: #8ab3f2;
+    width: 350px;
+}
+
+#txtbox {
+    height: 142px;
+    width : 300px;
+}
+
+</style>
+
+  <body>
+  <div class="page-header">
+        <h2>Welcome to itucsdb1743's Article Site</h2>
+      </div>
+        <h2>
+            <a id="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('post_page')}}">Articles</a> | Polls
+        </h2>
+<p align="middle">
+		{%if polllist %}
+        {% for questions,tempcreatorname in polllist %}
+		<p align="middle">
+       	<b style="text-decoration:none">
+       	<a href="{{ url_for('poll_page',pollquestion=questions,creatorname=tempcreatorname) }}" style="color:black;">
+		Poll Question: <font color="darkred">{{questions}}</font> Owner: <font color="darkred"> {{tempcreatorname}}</font></a>
+		</b>
+		<hr>
+		</p>
+         {% endfor %}
+          {%else%}
+         <p align="middle">There is no poll in application</p>
+         {%endif%}
+     </p>
+<br>
+<br>
+</div>
+
+  </body>
+  {% endblock %}
