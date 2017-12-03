@@ -1,7 +1,7 @@
 from flask import current_app
 import psycopg2 as dbapi2
 from flask_login import current_user
-
+from flask import request
 class Poll():
     def __init__(self,question,creatorname):
         self.votenumber=0
@@ -93,11 +93,8 @@ class Poll():
         choiceid=temp[0]
         cursor.close()
         cursor=connection.cursor()
-        username=current_user.username
-        cursor.execute("""SELECT ID FROM USERS WHERE USERNAME=%s""",(username,))
-        temp=cursor.fetchone()
-        userid=temp[0]
-        cursor.execute("""INSERT INTO VOTES (POLLID,CHOICEID,USERID) VALUES (%s,%s,%s)""",(pollid,choiceid,userid))
+        userip=request.environ['REMOTE_ADDR']
+        cursor.execute("""INSERT INTO VOTES (POLLID,CHOICEID,IP) VALUES (%s,%s,%s)""",(pollid,choiceid,userip))
         cursor.execute("""UPDATE CHOICES SET NUMBEROFVOTES=NUMBEROFVOTES+1 WHERE CHOICEID=%s""",(choiceid,))
         connection.commit()
         cursor.close()
@@ -110,13 +107,9 @@ class Poll():
         temp=cursor.fetchone()
         pollid=temp
         cursor.close()
+        userip=request.environ['REMOTE_ADDR']
         cursor=connection.cursor()
-        cursor.execute("""SELECT ID FROM USERS WHERE USERNAME=%s""",(username,))
-        temp=cursor.fetchone()
-        userid=temp[0]
-        cursor.close()
-        cursor=connection.cursor()
-        cursor.execute("""SELECT CHOICEID FROM VOTES WHERE USERID=%s AND POLLID=%s""",(userid,pollid))
+        cursor.execute("""SELECT CHOICEID FROM VOTES WHERE IP=%s AND POLLID=%s""",(userip,pollid))
         temp=cursor.fetchone()
         if temp is None:
             return 0

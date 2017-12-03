@@ -54,15 +54,10 @@ def login_page():
     if request.method == 'POST' and form.validate():
         username = form.username.data
         user = get_user(username)
-        tuples=1
-        tuper=1
         if user is not None:
             password = form.password.data
-            """ pwd_context.verify(password, user.password):"""
-            if tuples == tuper:
-                print("User logged in")
+            if pwd_context.verify(password, user.password):
                 login_user(user)
-
                 try:
                     with dbapi2.connect(app.config['dsn']) as connection:
                         with connection.cursor() as cursor:
@@ -71,19 +66,25 @@ def login_page():
                     return redirect(url_for('initialize_database'))
                 flash('You have logged in.')
                 next_page = request.args.get('next', url_for('post_page'))
-                return redirect(url_for('post_page'))
                 return redirect(next_page)
-
-
         flash('Invalid credentials.')
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_page():
     form = RegisterForm(request.form)
+
     if request.method == 'POST' and form.validate():
         username = form.username.data
         password = pwd_context.encrypt(form.password.data)
+        refcode = request.form['refcode']
+        connection=dbapi2.connect(current_app.config['dsn'])
+        cursor=connection.cursor()
+        cursor.execute("""SELECT REC FROM REFCODE WHERE REFC=%s""", (refcode,))
+        if cursor.rowcount==0:
+            flash('No Referance Code')
+            return render_template('register.html', form=form)
+
         try:
             with dbapi2.connect(app.config['dsn']) as connection:
                 with connection.cursor() as cursor:
@@ -98,7 +99,7 @@ def register_page():
                     cursor.execute("""INSERT INTO POINTS (USERID) VALUES(%s)""", (userid,))
                     user=get_user(username)
                     login_user(user)
-                    return redirect(url_for('home_page'))
+                    return redirect(url_for('post_page'))
         except:
             flash('Username is already taken')
 
@@ -188,7 +189,6 @@ def polls_page():
             return render_template('polls_wo_login.html',polllist=polllist)
 
 @app.route('/poll/<string:creatorname>/<string:pollquestion>',methods=['GET','POST'])
-@login_required
 def poll_page(pollquestion,creatorname):
     current_user.activetab = 10
     if request.method=='POST':
@@ -241,7 +241,7 @@ def post_page():
     if request.method == 'GET':
         now = datetime.datetime.now()
         posts = current_app.Postlist.get_posts()
-        print(request.remote_addr)
+        print(request.environ['REMOTE_ADDR'])
 
         if current_user.is_authenticated:
             return render_template('posts.html', posts=posts)
@@ -259,7 +259,6 @@ def post_page():
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def posts_page(post_id):
-    current_user.activetab = 1
     id_post=post_id
     holderid=current_app.Postlist.getownerid(post_id)
     post = current_app.Postlist.get_post(post_id)
@@ -272,16 +271,12 @@ def posts_page(post_id):
             guest=0;
         else:
             guest=1;
+            return render_template('post_wo_login.html', posts=post)
 
         if request.method == 'GET':
-            #isTweetLiked=isLiked(current_user.username,post_id)
             if post==None:
                 return(redirect(url_for('error_page')))
 
-            #if guest == 1:
-                #return render_template('gpost.html', posts=post,isTweetLiked=isTweetLiked)
-
-            #else:
             return render_template('post.html', posts=post)
         else:
 
@@ -304,28 +299,6 @@ def posts_page(post_id):
                 posts = post(title, context, id_post, current_user.username, numlike)
                 current_app.Postlist.update_post(id_post, posts)
                 return redirect(url_for('posts_page', post_id=id_post))
-
-            elif request.form['submit']=='liketweet':
-                isTweetLiked=like(post_id)
-                if isTweetLiked:
-                    flash("Tweet is liked")
-                else:
-                    flash("Tweet can not be liked")
-            '''
-                post = current_app.Postlist.get_post(post_id)
-                return render_template('gpost.html',posts=post,isTweetLiked=isTweetLiked)
-            elif request.form['submit']=='unliketweet':
-    
-                isTweetUnliked=unlike(post_id)
-                if isTweetUnliked:
-                    flash("Tweet is unliked")
-                else:
-                    flash("Tweet can not be unliked")
-    
-                post = current_app.Postlist.get_post(post_id)
-                isTweetLiked=isLiked(current_user.username,post_id)
-                return render_template('gpost.html',posts=post,isTweetLiked=isTweetLiked)
-            '''
     else:
         return render_template('post_wo_login.html', posts=post)
 
@@ -364,7 +337,7 @@ def initialize_database():
     with dbapi2.connect(app.config['dsn']) as connection:
             with connection.cursor() as cursor:
                 cursor.execute(open("script.sql", "r").read())
-    #time.sleep(5)
+    time.sleep(3)
     return redirect(url_for('home_page'))
 
 if __name__ == '__main__':

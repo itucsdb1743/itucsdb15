@@ -38,14 +38,16 @@
 
   <body>
    <h1>Hello, to itucsdb1743!</h1>
-
+     <h2>
+            Articles |<a id="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('polls_page')}}">Polls</a>
+     </h2>
     <h4	style="padding-bottom: 15px;">Welcome to Posts  {{ current_user.username }}</h4>
 
     <div class="page-header">
         <h3>Post A Post</h3>
       </div>
 
-      <form role="form" action="" method="post" name="add_twits"
+      <form role="form" action="" method="post" name="add_posts"
             class="form-horizontal">
         <div class="form-group">
           <label for="title" class="control-label col-sm-1">Title:</label>
@@ -80,7 +82,7 @@
         {% else %}
 		<div id="postwrapper">
 		<h4>
-		<a d="posttit"; style="color: black" style="text-decoration: none" href="">
+		<a d="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('posts_page', post_id=post.postid ) }}">
 		{{ post.title }}</a>
         <font size="1" style="color: grey" id="postcon">- {{ post.postid }}</font><br>
 		<font size="4" style="color: grey" id="postcon">{{ post.context }}</font><br>
