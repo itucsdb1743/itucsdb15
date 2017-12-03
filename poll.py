@@ -105,6 +105,7 @@ class Poll():
         cursor=connection.cursor()
         cursor.execute("""SELECT POLLID FROM POLLS WHERE CREATORID=%s AND POLLQUESTION =%s """,(self.creatorid,self.question))
         temp=cursor.fetchone()
+        usr=username
         pollid=temp
         cursor.close()
         userip=request.environ['REMOTE_ADDR']

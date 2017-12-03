@@ -190,7 +190,7 @@ def polls_page():
 
 @app.route('/poll/<string:creatorname>/<string:pollquestion>',methods=['GET','POST'])
 def poll_page(pollquestion,creatorname):
-    current_user.activetab = 10
+    user="admin"
     if request.method=='POST':
         if request.form['submit']=='update':
             current_app.tempPollList=ListOfPolls('temp')
@@ -198,7 +198,7 @@ def poll_page(pollquestion,creatorname):
             newquestion=request.form['choiceorquestion']
             poll.updateQuestion(newquestion)
             choices=poll.getChoices()
-            isVoted=poll.isVoted(current_user.username)
+            isVoted=poll.isVoted(user)
             return redirect(url_for('poll_page',pollquestion=newquestion,creatorname=creatorname))
         elif request.form['submit']=='delete':
             app.polls=ListOfPolls('polls')
@@ -211,14 +211,14 @@ def poll_page(pollquestion,creatorname):
             choiceinfo=request.form['choiceorquestion']
             poll.addChoice(choiceinfo)
             choices=poll.getChoices()
-            isVoted=poll.isVoted(current_user.username)
+            isVoted=poll.isVoted(user)
         elif request.form['submit']=='vote':
             current_app.tempPollList=ListOfPolls('temp')
             poll=current_app.tempPollList.getPoll(pollquestion,creatorname)
             choiceContent=request.form['answer']
             poll.voteforPoll(choiceContent)
             choices=poll.getChoices()
-            isVoted=poll.isVoted(current_user.username)
+            isVoted=poll.isVoted(user)
 
 
         return redirect(url_for('poll_page',pollquestion=pollquestion,creatorname=creatorname))
@@ -229,14 +229,15 @@ def poll_page(pollquestion,creatorname):
         current_app.templist=ListOfPolls('temp')
         poll=current_app.templist.getPoll(pollquestion,creatorname)
         choices=poll.getChoices()
-        isVoted=poll.isVoted(current_user.username)
+        isVoted=poll.isVoted(user)
         counter=0
-        if (creatorname==current_user.username):
-            return render_template('pollownerperspective.html',pollquestion=pollquestion,choices=choices,isVoted=isVoted,counter=counter)
+        if(current_user.is_authenticated):
+            if (creatorname==current_user.username):
+                return render_template('pollownerperspective.html',pollquestion=pollquestion,choices=choices,isVoted=isVoted,counter=counter)
         else:
             return render_template('pollvoterperspective.html',pollquestion=pollquestion,choices=choices,isVoted=isVoted,counter=counter)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/post', methods=['GET', 'POST'])
 def post_page():
     if request.method == 'GET':
         now = datetime.datetime.now()
@@ -303,16 +304,15 @@ def posts_page(post_id):
         return render_template('post_wo_login.html', posts=post)
 
 
-@app.route('/home')
+@app.route('/')
 def home_page():
-    now = datetime.datetime.now()
-    return render_template('home.html', current_time=now.ctime())
+   return redirect(url_for('post_page'))
 
 @app.route('/logout')
 def logout_page():
     logout_user()
     flash('You have logged out.')
-    return redirect(url_for('home_page'))
+    return redirect(url_for('post_page'))
 
 def main():
     app = create_app()
@@ -338,7 +338,7 @@ def initialize_database():
             with connection.cursor() as cursor:
                 cursor.execute(open("script.sql", "r").read())
     time.sleep(3)
-    return redirect(url_for('home_page'))
+    return redirect(url_for('post_page'))
 
 if __name__ == '__main__':
     main()
