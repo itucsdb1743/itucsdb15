@@ -1,3 +1,4 @@
+{% extends "layout.html" %}
 {% block content %}
 
 <style>
@@ -42,12 +43,11 @@
         {% else %}
 		<div id="postwrapper">
 		<h4>
-		<a id="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('posts_page', post_id=post.postid ) }}">
+		<a id="posttit"; style="color: black" style="text-decoration: none" href="{{ url_for('post_page', post_id=post.postid ) }}">
 		{{ post.title }}</a>
         <font size="1" style="color: grey" id="postcon">- {{ post.postid }}</font><br>
-		<font size="4" style="color: grey" id="postcon">{{ post.context }}</font><br>
-        <font size="1" style="color: grey" id="postcon">Author: {{ post.userhandle }}</font><br>
-		<font size="2" id="postcon">Likes({{ post.numberoflikes }})</font>
+		<font size="4" style="color: white" id="postcon">{{ post.context }}</font><br>
+        <font size="1" style="color: white" id="postcon">Author: {{ post.userhandle }}</font><br>
 		</h4>
 		</div>
 		<br><br>

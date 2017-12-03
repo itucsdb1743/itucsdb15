@@ -43,9 +43,14 @@
             <div class="inner">
               <nav>
                 <ul class="nav masthead-nav">
-                  <li style="background-color: #ababab; padding-right:10px; padding-left: 10px">
-                      <a href="{{ url_for('post_page') }}">Posts</a>
-                  </li>
+			  		<li style=" {% if current_user.activetab == 0 %} background-color: #ababab; padding-right:10px; padding-left: 10px{%endif%}"><a class="active" href="{{ url_for('home_page') }}">Home{%if current_user.is_authenticated %}-{{ current_user.username }}{%else%}{%endif%}</a></li>
+			  		{% if current_user.is_authenticated %}
+                    <li style=" {% if current_user.activetab == 16 %} background-color: #ababab; padding-right:10px; padding-left: 10px{%endif%}"><a href="{{ url_for('bugs_page') }}">Reported Bugs</a></li>
+			  		<li><a href="{{ url_for('logout_page') }}">Logout</a></li>
+			  		{% else %}
+			  		<li><a href="{{ url_for('login_page') }}">Login</a></li>
+                    <li><a href="{{ url_for('register_page') }}">Register</a></li>
+			  		{% endif %}
                 </ul>
               </nav>
             </div>
@@ -54,6 +59,10 @@
         </div>
 
       </div>
+
+    </div>
+    {% block content %}{% endblock %}
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -75,7 +84,9 @@
     background-color: #ececec;
     bottom:0;">
 
-      &copy; 2016, itucsdb1743 <br>
+      &copy; 2017, itucsdb1743 <br>
+      <a style="color: black" style="text-decoration: none" href="{{ url_for('bugs_page') }}">
+		<font size="2">Report A  Bug</font></a>
     </div>
   </body>
 </html>
