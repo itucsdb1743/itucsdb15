@@ -80,28 +80,23 @@ def register_page():
         refcode = request.form['refcode']
         connection=dbapi2.connect(current_app.config['dsn'])
         cursor=connection.cursor()
-        cursor.execute("""SELECT REC FROM REFCODE WHERE REFC=%s""", (refcode,))
+        cursor.execute("""SELECT REFC FROM REFCODE WHERE REFC=%s""", (refcode,))
         if cursor.rowcount==0:
             flash('No Referance Code')
+            print("NoREFCODE")
             return render_template('register.html', form=form)
 
         try:
             with dbapi2.connect(app.config['dsn']) as connection:
                 with connection.cursor() as cursor:
                     cursor.execute("""INSERT INTO USERS (USERNAME, PASSWORD) VALUES (%s, %s)""", (username, password))
-
-            with dbapi2.connect(app.config['dsn']) as connection:
-                with connection.cursor() as cursor:
-                    userid = get_userid(username)
-                    cursor.execute("""INSERT INTO USERPROFILE (ID, NICKNAME, USERNAME, BIO) VALUES(%s, %s, %s, %s)""", (userid, username, username, 'bio'))
-                    cursor.execute("""INSERT INTO USERINFO (USERID, NAME, SURNAME, NICKNAME, EMAIL, LANGUAGE) VALUES(%s, %s, %s, %s, %s, %s)""",
-                                   (userid, '', '', '', '', ''))
-                    cursor.execute("""INSERT INTO POINTS (USERID) VALUES(%s)""", (userid,))
-                    user=get_user(username)
-                    login_user(user)
-                    return redirect(url_for('post_page'))
         except:
+            print("EXEPTION")
             flash('Username is already taken')
+
+        user=get_user(username)
+        login_user(user)
+        return redirect(url_for('post_page'))
 
     return render_template('register.html', form=form)
 
@@ -258,13 +253,51 @@ def post_page():
         current_app.Postlist.add_post(post)
         return redirect(url_for('post_page'))
 
+@app.route('/deleteuser', methods=['GET','POST'])
+@login_required
+def deleteuser():
+    current_user.activetab = 15
+    if not current_user.is_admin:
+        abort(401)
+    if request.method == 'POST':
+        with dbapi2.connect(app.config['dsn']) as connection:
+            with connection.cursor() as cursor:
+                username=request.form['selecteduser']
+                if username=='- Select user -':
+                    flash('Please select a user to delete')
+                else:
+                    print(username)
+                    cursor.execute("""DELETE FROM USERS WHERE USERNAME=%s""",(username,))
+        return redirect(url_for('deleteuser'))
+    else:
+        with dbapi2.connect(app.config['dsn']) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""SELECT USERNAME FROM USERS""")
+                users=cursor.fetchall()
+        return render_template('deleteuser.html', users=users)
+
+@app.route('/updateprofile', methods= ['GET', 'POST'])
+@login_required
+def updateprofile_page():
+    passForm=ChangePassForm(request.form)
+    updateForm=UpdateProfileForm(request.form)
+    if request.method=='POST':
+        if passForm.validate():
+            password = pwd_context.encrypt(passForm.password.data)
+            with dbapi2.connect(app.config['dsn']) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("""UPDATE USERS SET PASSWORD=%s WHERE USERNAME=%s""", (password,current_user.username))
+            flash('Your password has been changed.')
+
+    return render_template('updateprofile.html', passForm=passForm, updateForm=updateForm)
+
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def posts_page(post_id):
     id_post=post_id
     holderid=current_app.Postlist.getownerid(post_id)
     post = current_app.Postlist.get_post(post_id)
-
-    if current_user.is_authenticated:
+    crrid=current_app.Postlist.getid(current_user.username)
+    if holderid==crrid:
 
         cduserid=current_app.Postlist.getid()
         guest=0;

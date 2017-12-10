@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Update Password{% endblock %}
+{% block content %}
+      <div class="page-header">
+        <h1>Update Profile</h1>
+      </div>
+
+
+		<h4>Change Password</h4>
+      <form role="form" action="/updateprofile" method="POST" name="changepass"
+            class="form-horizontal">
+      {{ passForm.csrf_token }}
+
+        <div class="form-group">
+          <div class="col-sm-2">
+          {{ passForm.password(class='form-control', style='width:auto',id='password', placeholder='New Password') }}
+          </div>
+			{% for error in passForm.password.errors %}
+            <span class="error">{{ error }}</span>
+          	{% endfor %}
+        </div>
+       	<div class="form-group">
+          <div class="col-sm-2">
+          {{ passForm.confirmPass(class='form-control', style='width:auto', id='confirmPass', placeholder='Confirm Password') }}
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-2">
+            <button {% if current_user.is_admin %} disabled {% endif %} type="submit" name="btn" value="Change Password"
+                    class="btn btn-success {% if current_user.is_admin %} disabled {% endif %}">{% if current_user.is_admin %} Not available for admin {% else %}Change Password {%endif%}</button>
+          </div>
+
+        </div>
+      </form>
+{% endblock %}

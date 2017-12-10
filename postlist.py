@@ -9,12 +9,11 @@ class Postlist:
         self.posts = {}
         self.last_key = 0
 
-    def getid(self):
+    def getid(self, username):
         connection = dbapi2.connect(current_app.config['dsn'])
         cursor = connection.cursor()
-        cursor.execute("""SELECT ID FROM USERS WHERE USERNAME=%s""", (current_user.username,))
+        cursor.execute("""SELECT ID FROM USERS WHERE USERNAME=%s""", (username,))
         usernum=cursor.fetchone()
-        usernum = 1
         return usernum
 
     def getownerid(self, postid):
