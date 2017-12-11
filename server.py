@@ -297,16 +297,9 @@ def posts_page(post_id):
     holderid=current_app.Postlist.getownerid(post_id)
     post = current_app.Postlist.get_post(post_id)
     crrid=current_app.Postlist.getid(current_user.username)
+    print(holderid)
+    print(crrid)
     if holderid==crrid:
-
-        cduserid=current_app.Postlist.getid()
-        guest=0;
-        if holderid == cduserid:
-            guest=0;
-        else:
-            guest=1;
-            return render_template('post_wo_login.html', posts=post)
-
         if request.method == 'GET':
             if post==None:
                 return(redirect(url_for('error_page')))

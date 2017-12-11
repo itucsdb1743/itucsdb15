@@ -21,7 +21,6 @@ class Postlist:
         cursor = connection.cursor()
         cursor.execute("""SELECT USERID FROM POSTS WHERE POSTID=%s""", (postid,))
         owner = cursor.fetchone()
-        owner = 1
         return owner
 
     def add_post(self, post):
